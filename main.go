@@ -19,4 +19,15 @@ func main() {
 
 	router := httprouter.New()
 
+	router.POST("/auth/login", routes.Login)
+	router.POST("/auth/register", routes.Register)
+
+	router.GET("/posts", middlewares.CheckJwt(routes.GetAllPosts))
+	router.GET("/me/posts", middlewares.CheckJwt(routes.GetMyPosts))
+	router.POST("/posts", middlewares.CheckJwt(routes.CreatePost))
+	router.PUT("/posts/:id", middlewares.CheckJwt(routes.EditPost))
+	router.DELETE("/posts/:id", middlewares.CheckJwt(routes.DeletePost))
+
+	fmt.Println("Listening on port 8000")
+	log.Fatal(http.ListenAndServe(":8080", router))
 }

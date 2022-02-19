@@ -29,5 +29,5 @@ func main() {
 	router.DELETE("/posts/:id", middlewares.CheckJwt(routes.DeletePost))
 
 	fmt.Println("Listening on port 8000")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(":8000", router))
 }

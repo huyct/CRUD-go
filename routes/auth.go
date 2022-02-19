@@ -6,10 +6,10 @@ import (
 	"net/http"
 
 	"github.com/asaskevich/govalidator"
-	"github.com/huyct/CRUD-go/auth"
-	"github.com/huyct/CRUD-go/database"
+	jwt "github.com/huyct/CRUD-go/auth"
+	db "github.com/huyct/CRUD-go/database"
 	"github.com/huyct/CRUD-go/models"
-	"github.com/huyct/CRUD-go/utils"
+	res "github.com/huyct/CRUD-go/utils"
 	"github.com/julienschmidt/httprouter"
 	"go.mongodb.org/mongo-driver/bson"
 )

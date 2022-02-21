@@ -23,7 +23,7 @@ FROM gcr.io/distroless/base-debian10
 WORKDIR /
 
 COPY --from=build /main /main
-COPY --from=build /app/config.json ./
+# COPY --from=build /app/config.json ./
 
 USER nonroot:nonroot
 

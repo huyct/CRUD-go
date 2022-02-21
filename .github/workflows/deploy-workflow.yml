@@ -3,7 +3,6 @@ name: Test and deploy to digital ocean
 on:
   pull_request:
     branches: [main]
-
 jobs:
   test:
     runs-on: ubuntu-latest

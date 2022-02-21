@@ -36,7 +36,7 @@ func Login(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	}
 
 	//convert interface to string
-	hashedPassword := fmt.Sprint("%v", result["password"])
+	hashedPassword := fmt.Sprintf("%v", result["password"])
 
 	err = models.CheckPasswordHash(hashedPassword, password)
 

@@ -1,0 +1,94 @@
+name: Test and deploy to digital ocean
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: run test
+    services:
+      # postgres:
+      #   image: postgres:12-alpine
+      #   env:
+      #     POSTGRES_USER: root
+      #     POSTGRES_PASSWORD: secret
+      #     POSTGRES_DB: simple-bank
+      #   ports:
+      #     - 5432:5432
+      #   options: >-
+      #     --health-cmd pg_isready
+      #     --health-interval 10s
+      #     --health-timeout 5s
+      #     --health-retries 5
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: set up go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+
+      # - name: Install golang-migrate
+      #   run: |
+      #     curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz | tar xvz
+      #     sudo mv migrate.linux-amd64 /usr/bin/migrate
+      #     which migrate
+
+      # - name: Run migrations
+      #   run: make migrateUp
+
+      - name: test
+        run: go test -v ./...
+  build:
+    name: Build and push image to Docker Hub
+    runs-on: ubuntu-latest
+    environment: production
+    needs: test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: duckhue01/simple-bank:latest
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: production
+    needs: build
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Save DigitalOcean cluster
+        run: doctl kubernetes cluster kubeconfig save afdd6160-99b7-4a8f-9f36-6443e0d06956
+
+      - name: Deploy image to DigitalOcean
+        run: |
+          kubectl apply -f k8s/deployment.yml
+          kubectl apply -f k8s/ingress.yml
+          kubectl apply -f k8s/service.yml
+          kubectl apply -f k8s/issuer.yml

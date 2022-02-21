@@ -3,7 +3,7 @@
 ##
 ## Build
 ##
-FROM golang:1.16-buster AS build
+FROM golang:1.17-buster AS build
 
 WORKDIR /app
 
@@ -23,8 +23,7 @@ FROM gcr.io/distroless/base-debian10
 WORKDIR /
 
 COPY --from=build /main /main
-
-EXPOSE 8000
+COPY --from=build /app/config.json ./
 
 USER nonroot:nonroot
 

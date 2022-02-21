@@ -3,7 +3,6 @@ package jwt
 import (
 	"fmt"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 
@@ -16,7 +15,7 @@ func Create(username string) (string, error) {
 	claims["username"] = username
 	claims["exp"] = time.Now().Add(time.Hour * 12)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(os.Getenv("SECRET_JWT")))
+	return token.SignedString([]byte("secret"))
 }
 
 func Verify(r *http.Request) error {
@@ -25,7 +24,7 @@ func Verify(r *http.Request) error {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(os.Getenv("SECRET_JWT")), nil
+		return []byte("secret"), nil
 	})
 	if err != nil {
 		return err
@@ -52,7 +51,7 @@ func EctractUsernameFromToken(r *http.Request) (string, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(os.Getenv("SECRET_JWT")), nil
+		return []byte("secret"), nil
 	})
 
 	if err != nil {

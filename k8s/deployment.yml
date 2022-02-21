@@ -4,7 +4,7 @@ metadata:
   name: crud-go
   labels:
     app: crud-go
-  namespace: default
+  namespace: huycao
 spec:
   replicas: 2
   selector:
@@ -17,7 +17,6 @@ spec:
     spec:
       containers:
         - name: crud-go
-          image: huyahiho/crud-go:multistage
-          imagePullPolicy: Always
+          image: huyahiho/crud:1.1
           ports:
-            - containerPort: 3000
+            - containerPort: 8000

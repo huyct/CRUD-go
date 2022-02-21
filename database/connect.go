@@ -2,14 +2,14 @@ package db
 
 import (
 	"context"
+	"log"
+
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
-	"os"
 )
 
 func ConnectUsers() *mongo.Collection {
-	clientOptions := options.Client().ApplyURI(os.Getenv("MONGODB_URI"))
+	clientOptions := options.Client().ApplyURI("mongodb+srv://huy:123@cluster0.zfyia.mongodb.net/golang?retryWrites=true&w=majority")
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 
 	if err != nil {
@@ -28,7 +28,7 @@ func ConnectUsers() *mongo.Collection {
 }
 
 func ConnectPosts() *mongo.Collection {
-	clientOptions := options.Client().ApplyURI(os.Getenv("MONGODB_URI"))
+	clientOptions := options.Client().ApplyURI("mongodb+srv://huy:123@cluster0.zfyia.mongodb.net/golang?retryWrites=true&w=majority")
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 
 	if err != nil {

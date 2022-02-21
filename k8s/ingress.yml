@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: crud-go
+  namespace: cert-manager
+  # annotations:
+  #   cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: "huycao.cluster.ahiho.dev"
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: crud-go
+                port:
+                  number: 80
+  tls:
+    - hosts:
+      - huycao.cluster.ahiho.dev
+      secretName: huycao-cluster-ahiho-dev-cert
